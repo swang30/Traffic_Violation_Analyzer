@@ -18,8 +18,7 @@ def load_data_main(where, limit=10000):
     client = Socrata("data.montgomerycountymd.gov", app_token=config['API']['APP_TOKEN'])
     results = client.get("4mse-ku6q", limit=limit, where=where)
     return pd.DataFrame.from_records(results)
-    # results_df.to_csv('C:\\Users\sswan\iCloudDrive\_CODE\\Udacity_Data_Engineer\Capstone_Proj\Data\MOCO_Traffic_Violation_Sample.csv')
-
+    
 def load_data_meta(file_path, file_type='csv'):
     """
     Load meta data
