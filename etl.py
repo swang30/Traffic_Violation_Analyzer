@@ -1,5 +1,3 @@
-import sys
-sys.path.append('C:\\Users\sswan\iCloudDrive\_CODE\\Udacity_Data_Engineer\Capstone_Proj')
 
 import pandas as pd
 from sodapy import Socrata
@@ -8,7 +6,7 @@ from uszipcode import SearchEngine
 from datetime import datetime, timedelta
 import s3fs
 import psycopg2
-from Capstone_Proj.sql_queries import *
+from sql_queries import *
 
 def load_data_main(where, limit=10000):
     """
@@ -119,7 +117,7 @@ if __name__ == "__main__":
     SETUP = False
 
     config = configparser.ConfigParser()
-    config_path = 'C:\\Users\sswan\iCloudDrive\_CODE\\Udacity_Data_Engineer\Capstone_Proj\credential.cfg'
+    config_path = 'credential.cfg'
     config.read(config_path)
 
     s3_path = "udacity-data-engineer-sw/Capstone_Project"
@@ -133,7 +131,7 @@ if __name__ == "__main__":
 
     if SETUP:
         # Load historical file
-        df_all = pd.read_csv('Capstone_Proj/Data/Traffic_Violations_20201101.csv')
+        df_all = pd.read_csv('Data/Traffic_Violations_20201101.csv')
         df_all['ZIP5'] = df_all.apply(lambda x: geo_to_zip(x['Latitude'], x['Longitude'], search_engine=search), axis=1)
         file_name = "Traffic_Violations_ALL.csv"
         df_to_s3(df_all, s3_path=s3_path, file_name=file_name)
@@ -152,7 +150,7 @@ if __name__ == "__main__":
 
         #################### Load meta data ####################
         # census tract
-        df_census_tract = load_data_meta('Capstone_Proj/Data/acs2017_census_tract_data.csv')
+        df_census_tract = load_data_meta('Data/acs2017_census_tract_data.csv')
         df_census_tract = df_census_tract[['TractId','State','County','TotalPop','Men','Women','Hispanic','White','Black','Native','Asian','Pacific','Income','Poverty','Unemployment']]
         file_name = "acs2017_census_tract_data_thin.csv"
         df_to_s3(df_census_tract, s3_path=s3_path, file_name=file_name)
@@ -167,7 +165,7 @@ if __name__ == "__main__":
         s3_to_redshift(cur, conn, census_tract_copy, census_tract_create,census_tract_drop)
 
         # zip tract
-        df_zip_tract = load_data_meta('Capstone_Proj/Data/ZIP_TRACT_092020.xlsx', dtype={'ZIP': str, 'TRACT': str})
+        df_zip_tract = load_data_meta('Data/ZIP_TRACT_092020.xlsx', dtype={'ZIP': str, 'TRACT': str})
         df_zip_tract = df_zip_tract[['ZIP','TRACT']]
         file_name = "ZIP_TRACT_092020_thin.csv"
         df_to_s3(df_zip_tract, s3_path=s3_path, file_name=file_name)
